@@ -1,6 +1,7 @@
 import matplotlib.pyplot as plt
 import numpy as np
 from math import sqrt
+import random
 
 from dataclasses import dataclass
 
@@ -27,7 +28,6 @@ def activation(x: data_Node, weight: list, bias : float):
 
 
 if __name__ == "__main__":
-    
     # READING DATA
     input = []
     with open ("perceptron.data") as data:
@@ -36,8 +36,8 @@ if __name__ == "__main__":
             input.append(tmp)
 
     # LEARNING
-    w = [0.0 for i in range(len(input[0].data))]
-    bias = 0
+    w = [random.random() for i in range(len(input[0].data))]
+    bias = random.random()
     learning_rate = 0.01
     max_iterations = 100
 
@@ -47,12 +47,12 @@ if __name__ == "__main__":
 
         if (x.value == y):
             pass
-        else:
+        else:        
             error = input[i].value - net
             for j in range(x.n_columns):
-                w[j]= w[j] + learning_rate*error*x.data[j]
+                w[j] += learning_rate*error*x.data[j]
 
-            bias = bias - learning_rate*error
+            bias -= learning_rate*error
 
     # READING DATA
     test = []
@@ -69,4 +69,3 @@ if __name__ == "__main__":
             counter += 1
     
     print(counter/len(test))
-
