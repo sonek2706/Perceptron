@@ -19,12 +19,28 @@ class data_Node:
         self.data = list(map(float, data[:-1]))
 
     def __str__(self):
-        return f"I'm {self.type}"
+        return f"I'm {self.type}, value={self.value}"
 
+def calculate_net(x: list, weight: list, bias : float):
+    return np.dot(np.array(weight).T.tolist(), np.array(x).tolist()) - bias
 
 def activation(x: data_Node, weight: list, bias : float):
-    net = np.dot(weight, x.data)
+    net = calculate_net(x.data, weight, bias)
     return 1 if net>=0 else 0, net
+
+def perceptron(weight: int, bias: float, learning_rate:float, max_iterations:int)->list:
+    for i in range(len(input)):
+        x = input[i]
+        y, net = activation(x, weight, bias)
+
+        if (x.value != y):
+            error = input[i].value - net
+            for j in range(x.n_columns):
+                weight[j] += learning_rate*error*x.data[j]
+
+            bias -= learning_rate*error
+
+    return weight
 
 
 if __name__ == "__main__":
@@ -35,24 +51,13 @@ if __name__ == "__main__":
             tmp = data_Node(line.split(","))
             input.append(tmp)
 
-    # LEARNING
-    w = [random.random() for i in range(len(input[0].data))]
+    weight = [random.random() for i in range(len(input[0].data))]
     bias = random.random()
     learning_rate = 0.01
     max_iterations = 100
 
-    for i in range(len(input)):
-        x = input[i]
-        y, net = activation(x, w, bias)
-
-        if (x.value == y):
-            pass
-        else:        
-            error = input[i].value - net
-            for j in range(x.n_columns):
-                w[j] += learning_rate*error*x.data[j]
-
-            bias -= learning_rate*error
+    #Calculate the weight for perceptron.data
+    weight = perceptron(weight, bias, learning_rate, max_iterations)
 
     # READING DATA
     test = []
@@ -64,8 +69,8 @@ if __name__ == "__main__":
     # TESTING
     counter = 0
     for x in test:
-        y, net = activation(x, w, bias)
+        y, net = activation(x, weight, bias)
         if (x.value == y):
             counter += 1
     
-    print(counter/len(test))
+    print(f"{counter/len(test)*100}%")
