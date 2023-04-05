@@ -51,14 +51,6 @@ if __name__ == "__main__":
             tmp = data_Node(line.split(","))
             input.append(tmp)
 
-    weight = [random.random() for i in range(len(input[0].data))]
-    bias = random.random()
-    learning_rate = 0.01
-    max_iterations = 100
-
-    #Calculate the weight for perceptron.data
-    weight = perceptron(weight, bias, learning_rate, max_iterations)
-
     # READING DATA
     test = []
     with open("perceptron.test.data") as test_data:
@@ -66,11 +58,27 @@ if __name__ == "__main__":
             tmp = data_Node(line.split(","))
             test.append(tmp)
 
-    # TESTING
-    counter = 0
-    for x in test:
-        y, net = activation(x, weight, bias)
-        if (x.value == y):
-            counter += 1
-    
-    print(f"{counter/len(test)*100}%")
+
+    accuracy = []
+
+    learning_rate = 0.01
+    max_iterations = 100
+    for i in range(1000):
+        weight = [random.random() for i in range(len(input[0].data))]
+        bias = random.random()
+        
+        #Calculate the weight for perceptron.data
+        weight = perceptron(weight, bias, learning_rate, max_iterations)
+
+        # TESTING
+        counter = 0
+        for x in test:
+            y, net = activation(x, weight, bias)
+            if (x.value == y):
+                counter += 1
+        
+        accuracy.append(counter/len(test)*100)
+
+    plt.plot([n for n in range(1,1000+1)], accuracy)
+    plt.ylabel('Accuracy')
+    plt.show()
